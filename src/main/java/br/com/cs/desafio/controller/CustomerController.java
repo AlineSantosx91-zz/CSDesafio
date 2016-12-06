@@ -2,10 +2,12 @@ package br.com.cs.desafio.controller;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,11 +28,14 @@ public class CustomerController {
 	@Autowired
     @Qualifier("customerService")
     CustomerService customerService;  //Service which will do all data retrieval/manipulation work
+	
+    protected final Logger logger = Logger.getLogger(getClass());
+
  
-	@GetMapping("/hello")  
-	public String hello() {   
-	 return "Hello, world"; 
-	 }
+    @GetMapping("/hello")
+    public String handleRequest(Model model) {
+        return "hello";
+    }
 
     //-------------------Retrieve All Customers--------------------------------------------------------
      

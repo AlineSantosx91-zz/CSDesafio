@@ -1,6 +1,7 @@
 /Library.class
-/WEB-INF/
-/br/
-/config/
 /LibraryTest.class
+/WEB-INF/
+/application.properties
+/br/
 /data/
+/config/
