@@ -11,5 +11,4 @@ public interface  CustomerRepository extends JpaRepository<Customer, Long> {
 	@Query(value="SELECT c FROM Customer c WHERE c.email=:email")
 	public Customer findUnique(@Param("email") String email);
 	
-
 }

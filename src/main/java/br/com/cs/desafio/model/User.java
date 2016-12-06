@@ -9,6 +9,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class User extends DomainEntity{

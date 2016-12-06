@@ -52,6 +52,24 @@ public class Result<T> {
     
 
 
+    public Result ( int status, List<T> resultList, T result, List< Validator> validators ){
+        this.status = status;
+        this.resultList = resultList;
+        this.result = result;
+        this.validators = validators;
+    }
+
+    public Result (int status, List< Validator> validators ){
+        this.status = status;
+        this.resultList = null;
+        this.result = null;
+        this.validators = validators;
+    }
+    
+
+    
+
+
 	public T getResult() {
 		return result;
 	}
@@ -73,6 +91,20 @@ public class Result<T> {
 	public void setStatus(int status) {
 		this.status = status;
 	}
+	public List<Validator> getValidators() {
+		return validators;
+	}
+	public void setValidators(List<Validator> validators) {
+		this.validators = validators;
+	}
+	public static int getError() {
+		return ERROR;
+	}
+	public static int getSuccess() {
+		return SUCCESS;
+	}
+	
+	
 	
 	
 	
