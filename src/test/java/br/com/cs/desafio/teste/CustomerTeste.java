@@ -14,8 +14,14 @@ import org.springframework.web.client.RestTemplate;
 import br.com.cs.desafio.model.Customer;
 import br.com.cs.desafio.model.Phone;
 
+/**
+ * 
+ * Teste de Integração
+ * Teste Unitário
+ * @author Aline Santos
+ *
+ */
 @RunWith(SpringRunner.class)
-//@ContextConfiguration(classes = {TestContext.class, WebAppContext.class})
 @WebAppConfiguration
 public class CustomerTeste {
 	
@@ -32,7 +38,6 @@ public class CustomerTeste {
   
   @Test
 /* POST */
-@SuppressWarnings("unused")
 public  void createUser() {
     System.out.println("Testing create User API----------");
     RestTemplate restTemplate = new RestTemplate();
@@ -56,75 +61,16 @@ public  void createUser() {
     
     customer.setPhones(phones);
     
-    
     URI uri = restTemplate.postForLocation(REST_SERVICE_URI+"/customers/", customer, Customer.class);
-    System.out.println("Location : "+uri.toASCIIString());
+    System.out.println(uri.toASCIIString());
 }
   
-  
-  /* GET */
-  @SuppressWarnings("unchecked")
-  private static void listAllUsers(){
-      System.out.println("Testing listAllUsers API-----------");
-       
-      RestTemplate restTemplate = new RestTemplate();
-      List<LinkedHashMap<String, Object>> usersMap = restTemplate.getForObject(REST_SERVICE_URI+"/customers/", List.class);
-       
-      if(usersMap!=null){
-          for(LinkedHashMap<String, Object> map : usersMap){
-              System.out.println("User : id="+map.get("id")+", Email="+map.get("email"));
-          }
-      }else{
-          System.out.println("No user exist----------");
-      }
-  }
    
-  /* GET */
+  /* GET Customer por Email */
   private static void getUser(){
-      System.out.println("Testing getUser API----------");
       RestTemplate restTemplate = new RestTemplate();
-      Customer user = restTemplate.getForObject(REST_SERVICE_URI+"/customers/1", Customer.class);
+      Customer user = restTemplate.getForObject(REST_SERVICE_URI+"/customers/joao@gmail.com", Customer.class);
       System.out.println(user);
   }
-   
-
-//
-//  /* PUT */
-//  private static void updateUser() {
-//      System.out.println("Testing update User API----------");
-//      RestTemplate restTemplate = new RestTemplate();
-//      User user  = new User(1,"Tomy",33, 70000);
-//      restTemplate.put(REST_SERVICE_URI+"/user/1", user);
-//      System.out.println(user);
-//  }
-//
-//  /* DELETE */
-//  private static void deleteUser() {
-//      System.out.println("Testing delete User API----------");
-//      RestTemplate restTemplate = new RestTemplate();
-//      restTemplate.delete(REST_SERVICE_URI+"/user/3");
-//  }
-//
-//
-//  /* DELETE */
-//  private static void deleteAllUsers() {
-//      System.out.println("Testing all delete Users API----------");
-//      RestTemplate restTemplate = new RestTemplate();
-//      restTemplate.delete(REST_SERVICE_URI+"/user/");
-//  }
-//
-//  public static void main(String args[]){
-//      listAllUsers();
-//      getUser();
-//      createUser();
-//      listAllUsers();
-//      updateUser();
-//      listAllUsers();
-//      deleteUser();
-//      listAllUsers();
-//      deleteAllUsers();
-//      listAllUsers();
-//  }
-
 
 }

@@ -1,7 +1,5 @@
 package br.com.cs.desafio.controller;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -37,32 +35,17 @@ public class CustomerController {
         return "hello";
     }
 
-    //-------------------Retrieve All Customers--------------------------------------------------------
-     
-	@GetMapping("/customers")
-    public void listAllCustomers() {
-       Result<List<Customer>> result = customerService.findAllCustomers();
-       
-        if(result.getResult() != null){
-        	System.out.println(result.getStatus());
-        }
-    }
  
- 
-    //-------------------Retrieve Single Customer--------------------------------------------------------
-     
-    @GetMapping("/customers/{id}")
-    public ResponseEntity<Customer> getCustomer(@PathVariable("id") long id) {
-        System.out.println("Fetching Customer with id " + id);
-         Result<Customer> result = customerService.findById(id);
+    //-------------------Retrieve Single Customer by Email--------------------------------------------------------
+    
+    @GetMapping("/customers/{email}")
+    public ResponseEntity<Customer> getCustomer(@PathVariable("email") String email) {
+         Result<Customer> result = customerService.findByEmail(email);
         if (result.getResult() == null) {
-            System.out.println("Customer with id " + id + " not found");
             return new ResponseEntity<Customer>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Customer>(result.getResult(), HttpStatus.OK);
     }
- 
-     
      
     //-------------------Create a Customer--------------------------------------------------------
      
@@ -79,7 +62,6 @@ public class CustomerController {
 					return new  ResponseEntity<Customer>(result.getResult(), HttpStatus.OK);
 				}
 		} catch (Exception e) {
-//			return new ResponseEntity<Customer>( customer, HttpStatus.UNPROCESSABLE_ENTITY);
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
 
 		}

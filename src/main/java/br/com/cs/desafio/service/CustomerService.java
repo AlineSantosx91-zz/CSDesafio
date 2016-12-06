@@ -1,7 +1,5 @@
 package br.com.cs.desafio.service;
 
-import java.util.List;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,35 +33,6 @@ public class CustomerService implements ICustomerService {
 	public Result<Customer> saveCustomer(Customer custumer) {
 		 return new Result<Customer>(customerRepository.save(custumer));
 		
-	}
-
-	@Override
-	public Result<Customer> updateCustomer(Customer custumer) {
-		return new Result<Customer>(customerRepository.save(custumer));
-		
-	}
-
-	@Override
-	public void deleteCustomerById(long id) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public  Result<List<Customer>> findAllCustomers() {
-		return new Result<List<Customer>>(customerRepository.findAll());
-	}
-
-	@Override
-	public void deleteAllCustomers() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isCustomerExist(Customer custumer) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	
