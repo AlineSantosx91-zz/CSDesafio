@@ -10,7 +10,7 @@ public class RestInitializer extends AbstractAnnotationConfigDispatcherServletIn
 
 	 @Override
 	    protected Class<?>[] getRootConfigClasses() {
-	        return new Class[] { RestConfiguration.class };
+	        return new Class[] { ApplicationWebMvcConfig.class };
 	    }
 	   
 	    @Override
