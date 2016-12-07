@@ -2,8 +2,6 @@ package br.com.cs.desafio.service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,49 +14,54 @@ import br.com.cs.desafio.model.Customer;
 import br.com.cs.desafio.validators.Result;
 import br.com.cs.desafio.validators.Validator;
 
-
 @Service
-@Transactional
 public class CustomerService implements ICustomerService {
-	
+
 	@Autowired
-    @Qualifier("customerRepository")
+	@Qualifier("customerRepository")
 	CustomerRepository customerRepository;
-	
+
 	protected final Logger logger = Logger.getLogger(getClass());
 
-
 	@Override
-	public ResponseEntity<Customer> findById(long id) {
+	public ResponseEntity<Result<Customer>> findById(long id) {
 		Result<Customer> result = null;
-		
-		try{
+
+		try {
 			result = new Result<Customer>(customerRepository.findOne(id));
-			verifyResult(result, false);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage());
+		}
+
+		if (result == null) {
 			result = new Result<Customer>(new Validator("Houve um erro interno, tente novamente"));
 		}
-		
-		return new ResponseEntity<Customer>(result.getResult(), HttpStatus.OK);
+		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 	}
 
 	@Override
-	public ResponseEntity<Customer> findByEmail(String email) {
+	public ResponseEntity<Result<Customer>> findByEmail(String email) {
 		Result<Customer> result = null;
-		try{
-			result = new Result<Customer>(customerRepository.findUnique(email));
-			verifyResult(result, false);
-		}catch (Exception e) {
-			logger.error(e.getMessage());
+
+		if (email != null && !email.trim().isEmpty()) {
+			try {
+				result = new Result<Customer>(customerRepository.findUnique(email));
+			} catch (Exception e) {
+				logger.error(e.getMessage());
+			}
+		} else {
+			result = new Result<Customer>(new Validator("Email não pode ser vazio"));
+		}
+
+		if (result == null) {
 			result = new Result<Customer>(new Validator("Houve um erro interno, tente novamente"));
 		}
-		return new ResponseEntity<Customer>(result.getResult(), HttpStatus.OK);
+		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 	}
 
 	@Override
-	public ResponseEntity<Customer> saveCustomer(Customer customer) {
-		
+	public ResponseEntity<Result<Customer>> saveCustomer(Customer customer) {
+
 		Result<Customer> result = null;
 
 		try {
@@ -67,18 +70,17 @@ public class CustomerService implements ICustomerService {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
 		}
-		return new ResponseEntity<Customer>(result.getResult(), HttpStatus.OK);
-		
+		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
+
 	}
 
-
 	@Override
-	public ResponseEntity<Customer> verifyResult(Result<Customer> result, Boolean isPOST) {
+	public ResponseEntity<Result<Customer>> verifyResult(Result<Customer> result, Boolean isPOST) {
 		if (result == null) {
-			if(isPOST){
-				return new ResponseEntity<Customer>(HttpStatus.UNPROCESSABLE_ENTITY);
+			if (isPOST) {
+				return new ResponseEntity<Result<Customer>>(HttpStatus.UNPROCESSABLE_ENTITY);
 			}
-			return new ResponseEntity<Customer>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Result<Customer>>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		if (result.getStatus() == 0) {

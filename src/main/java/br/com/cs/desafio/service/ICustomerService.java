@@ -11,15 +11,13 @@ import br.com.cs.desafio.validators.Validator;
 
 public interface ICustomerService {
 	
-		ResponseEntity<Customer> findById(long id);
+		ResponseEntity<Result<Customer>> findById(long id);
      
-	 	ResponseEntity<Customer> findByEmail(String email);
+		ResponseEntity<Result<Customer>> findByEmail(String email);
 	     
-	 	ResponseEntity<Customer> saveCustomer(Customer custumer);
+		ResponseEntity<Result<Customer>> saveCustomer(Customer custumer);
 	 	
-	 	ResponseEntity<Customer> verifyResult(Result<Customer>  result, Boolean isPOST);
+		ResponseEntity<Result<Customer>> verifyResult(Result<Customer>  result, Boolean isPOST);
 	 	
-	 	List<Validator> errorResponse(List<Validator> validators);
-	 	
-	   
+	 	List<Validator> errorResponse(List<Validator> validators); 
 }

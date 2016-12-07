@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.cs.desafio.dao.CustomerRepository;
 import br.com.cs.desafio.model.Customer;
 import br.com.cs.desafio.service.CustomerService;
+import br.com.cs.desafio.validators.Result;
 
 @RestController
 @RequestMapping(value = "/api")
@@ -40,15 +40,7 @@ public class CustomerController {
 	}
 
 	@GetMapping("/customers")
-	public void getCustomers(@RequestParam(value = "email", required = false) String email) {
-		if (email != null && !email.trim().isEmpty()) {
-			getUniqueCustomer(email);
-		} else {
-			getAllCustomers();
-		}
-	}
-
-	private ResponseEntity<List<Customer>> getAllCustomers() {
+	private ResponseEntity<List<Customer>> getAllCustomers(@PathVariable(value = "email", required = true) String email) {
 		List<Customer> findAll = new ArrayList<>();
 		
 		try{
@@ -59,20 +51,15 @@ public class CustomerController {
 	
 		return new ResponseEntity<List<Customer>>(findAll, HttpStatus.OK);
 	}
-
-	private ResponseEntity<Customer> getUniqueCustomer(String email) {
-		return customerService.findByEmail(email);
+	
+	@GetMapping("/customers/{email}")
+	private ResponseEntity<Result<Customer>> getUniqueCustomer(@PathVariable("email") String email) {
+		ResponseEntity<Result<Customer>> findByEmail = customerService.findByEmail(email);
+		return findByEmail;
 	}
-
-
-	@GetMapping("/customers/{id}")
-	public ResponseEntity<Customer> getCustomerById(@PathVariable("id") Long id) {
-		return customerService.findById(id);
-	}
-
 
 	@PostMapping(value = "/customers")
-	public ResponseEntity<Customer> post(@RequestBody Customer customer) {
+	public 	ResponseEntity<Result<Customer>> post(@RequestBody Customer customer) {
 		return customerService.saveCustomer(customer);
 	}
 
