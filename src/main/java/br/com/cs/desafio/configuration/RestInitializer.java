@@ -2,8 +2,10 @@ package br.com.cs.desafio.configuration;
 
 import javax.servlet.Filter;
 
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+@Configuration
 public class RestInitializer extends AbstractAnnotationConfigDispatcherServletInitializer{
 
 	 @Override
