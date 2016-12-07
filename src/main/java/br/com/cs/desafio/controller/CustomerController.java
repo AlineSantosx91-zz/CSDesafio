@@ -40,7 +40,7 @@ public class CustomerController {
 	}
 
 	@GetMapping("/customers")
-	private ResponseEntity<List<Customer>> getAllCustomers(@PathVariable(value = "email", required = true) String email) {
+	private ResponseEntity<List<Customer>> getAllCustomers(@PathVariable(value = "email", required = false) String email) {
 		List<Customer> findAll = new ArrayList<>();
 		
 		try{

@@ -27,7 +27,7 @@ public class Phone extends DomainEntity implements Serializable {
 	
 	@JsonBackReference
     @ManyToOne
-	@JoinColumn(name="Customer_Id", referencedColumnName="id")
+	@JoinColumn(name="Customer_Id", referencedColumnName="Id")
     private Customer customer;
 
 	public String getDdd() {
