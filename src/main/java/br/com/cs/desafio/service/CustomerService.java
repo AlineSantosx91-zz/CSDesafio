@@ -59,6 +59,10 @@ public class CustomerService implements ICustomerService {
 		if (result == null) {
 			result = new Result<Customer>(new Validator("Houve um erro interno, tente novamente"));
 		}
+		
+		if(result.getResult() == null){
+			result = new Result<Customer>(new Validator("O email " +email+" não foi encontrado"));
+		}
 		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 	}
 

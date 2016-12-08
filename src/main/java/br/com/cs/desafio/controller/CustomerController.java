@@ -21,7 +21,7 @@ import br.com.cs.desafio.service.CustomerService;
 import br.com.cs.desafio.validators.Result;
 
 @RestController
-@RequestMapping(value = "/api")
+@RequestMapping(value = "/api", produces = "application/json")
 public class CustomerController {
 
 	@Autowired
@@ -52,10 +52,10 @@ public class CustomerController {
 		return new ResponseEntity<List<Customer>>(findAll, HttpStatus.OK);
 	}
 	
-	@GetMapping("/customers/{email}")
-	private ResponseEntity<Result<Customer>> getUniqueCustomer(@PathVariable("email") String email) {
-		ResponseEntity<Result<Customer>> findByEmail = customerService.findByEmail(email);
-		return findByEmail;
+	@GetMapping("/customers/{id}")
+	private ResponseEntity<Result<Customer>> getUniqueCustomer(@PathVariable("id") Long id) {
+		ResponseEntity<Result<Customer>> findById = customerService.findById(id);
+		return findById;
 	}
 
 	@PostMapping(value = "/customers")

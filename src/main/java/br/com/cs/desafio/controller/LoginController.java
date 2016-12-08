@@ -21,7 +21,7 @@ import br.com.cs.desafio.service.LoginService;
 import br.com.cs.desafio.validators.Result;
 
 @RestController
-@RequestMapping(value = "/auth")
+@RequestMapping(value = "/auth", produces = "application/json")
 public class LoginController {
 	
 	@Autowired
@@ -47,15 +47,17 @@ public class LoginController {
 	   return "redirect:loginForm";
 	 }
 	 
+//	 @RequestHeader(value="token", required=true )String appKey
 	 @GetMapping("/")
 		public String welcome(Map<String, Object> model) {
 			model.put("time", new Date());
-			model.put("message", "teste");
+			model.put("message", "WELCOME");
 			return "welcome";
 		}
 	 
 	 @PostMapping(value = "/login")
 		public ResponseEntity<Result<Customer>> post(@RequestBody Customer customer) {
-			return loginService.login(customer.getEmail(), customer.getPassword());
-		}
+		     ResponseEntity<Result<Customer>> user = loginService.login(customer.getEmail(), customer.getPassword());
+		     return user;
+	 	}
 }
