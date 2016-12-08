@@ -8,16 +8,17 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 public abstract class User extends DomainEntity{
 	
-	@Column(name = "Email", unique=true)
+	@Column(name = "Email", unique=true, nullable=false)
 	public String email;
 	
-	@Column(name = "Password", nullable=true)
+	@Column(name = "Password", nullable=false)
 	public String password;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -30,6 +31,10 @@ public abstract class User extends DomainEntity{
 	
 	@Column(name = "Token")
 	public String token;
+	
+	@Transient
+	public String passwordConfirm;
+	
 
 	public String getEmail() {
 		return email;
@@ -71,6 +76,16 @@ public abstract class User extends DomainEntity{
 	public void setToken(String token) {
 		this.token = token;
 	}
+
+	public String getPasswordConfirm() {
+		return passwordConfirm;
+	}
+
+	public void setPasswordConfirm(String passwordConfirm) {
+		this.passwordConfirm = passwordConfirm;
+	}
+	
+	
 	
 	
 	

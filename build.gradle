@@ -32,6 +32,8 @@ dependencies {
     compile group: 'org.hsqldb', name: 'hsqldb', version: '2.3.1'
     compile group: 'joda-time', name: 'joda-time', version: '2.3'
     compile group: 'org.springframework.security', name: 'spring-security-core', version: '3.1.0.RELEASE'
+	compile group: 'jstl', name: 'jstl', version: '1.1.2'
+    
     
     
     

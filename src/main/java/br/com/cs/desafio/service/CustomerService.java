@@ -28,7 +28,7 @@ public class CustomerService implements ICustomerService {
 		Result<Customer> result = null;
 
 		try {
-			result = new Result<Customer>(customerRepository.findOne(id));
+			result = new Result<Customer>(this.customerRepository.findOne(id));
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -36,6 +36,7 @@ public class CustomerService implements ICustomerService {
 		if (result == null) {
 			result = new Result<Customer>(new Validator("Houve um erro interno, tente novamente"));
 		}
+		
 		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 	}
 
@@ -45,7 +46,7 @@ public class CustomerService implements ICustomerService {
 
 		if (email != null && !email.trim().isEmpty()) {
 			try {
-				result = new Result<Customer>(customerRepository.findUnique(email));
+				result = new Result<Customer>(this.customerRepository.findUnique(email));
 			} catch (Exception e) {
 				logger.error(e.getMessage());
 			}
@@ -65,7 +66,7 @@ public class CustomerService implements ICustomerService {
 		Result<Customer> result = null;
 
 		try {
-			result = new Result<Customer>(customerRepository.save(customer));
+			result = new Result<Customer>(this.customerRepository.save(customer));
 			verifyResult(result, true);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
