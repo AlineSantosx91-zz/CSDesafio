@@ -1,5 +1,6 @@
 package br.com.cs.desafio.service;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -56,6 +57,9 @@ public class LoginService  implements ILoginService{
 			/*Caso o e-mail e a senha correspondam a um usuário existente, retornar igual 
 			 ao endpoint de Criação.*/
 			result = new Result<Customer>(this.loginRepository.login(email, password));
+			if(result != null && result.getStatus() == 1){
+				result = updateUserInfo(result.getResult());
+			}
 			result.getResult().setToken( UUID.randomUUID().toString());
 			result.getResult().setPassword(null);
 			return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
@@ -67,6 +71,11 @@ public class LoginService  implements ILoginService{
 
 		}
 				
+	}
+	
+	private Result<Customer> updateUserInfo( Customer customer){
+		customer.setLastLogin(new Date());
+		return new Result<Customer>(customerRepository.save(customer));
 	}
 
 }
