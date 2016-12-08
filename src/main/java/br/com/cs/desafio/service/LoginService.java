@@ -1,5 +1,7 @@
 package br.com.cs.desafio.service;
 
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -54,7 +56,8 @@ public class LoginService  implements ILoginService{
 			/*Caso o e-mail e a senha correspondam a um usuário existente, retornar igual 
 			 ao endpoint de Criação.*/
 			result = new Result<Customer>(this.loginRepository.login(email, password));
-			
+			result.getResult().setToken( UUID.randomUUID().toString());
+			result.getResult().setPassword(null);
 			return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 
 		} catch (Exception e) {
@@ -65,7 +68,5 @@ public class LoginService  implements ILoginService{
 		}
 				
 	}
-	
-
 
 }

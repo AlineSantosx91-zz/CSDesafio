@@ -29,6 +29,7 @@ public abstract class User extends DomainEntity{
 	@Column(name = "Modified", nullable=true, columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP" )
 	public Date modified;
 	
+	@Transient
 	@Column(name = "Token")
 	public String token;
 	

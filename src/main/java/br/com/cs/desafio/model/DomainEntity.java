@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
@@ -26,7 +28,7 @@ public abstract class DomainEntity {
 	 */
 	//@JsonIgnore
 	@Id @Column ( name = "Id" )
-//	@GeneratedValue ( strategy = GenerationType.IDENTITY )
+	@GeneratedValue ( strategy = GenerationType.IDENTITY )
 	public Long id;
 	
 	/**

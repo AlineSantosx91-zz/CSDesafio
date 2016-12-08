@@ -43,7 +43,7 @@ public class Result<T> {
 		this.validators.add(new Validator(exception.getMessage()));
 	}
 	
-    public Result ( Validator validator ){
+    public Result( Validator validator ){
         this.status = Result.ERROR;
         this.validators = new ArrayList<Validator>();
         this.validators.add(validator);

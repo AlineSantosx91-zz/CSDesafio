@@ -1,5 +1,6 @@
 package br.com.cs.desafio.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -64,11 +65,29 @@ public class CustomerService implements ICustomerService {
 	public ResponseEntity<Result<Customer>> saveCustomer(Customer customer) {
 
 		Result<Customer> result = null;
+		List<Validator> validators = new ArrayList<>(); 
+		
+		if(customer.getName() == null || customer.getName().trim().isEmpty()){
+			validators.add(new Validator("Nome é obrigatorio"));
+		}
+		
+		if(customer.getEmail() == null || customer.getEmail().trim().isEmpty()){
+			validators.add(new Validator("Email é obrigatorio"));
+		}
+		
+		if(customer.getPassword() == null || customer.getPassword().trim().isEmpty()){
+			validators.add(new Validator("Senha é obrigatorio"));
+		}
+		
+		if(validators.size() > 0){
+			return new ResponseEntity<Result<Customer>>(new Result<Customer>(0, validators), HttpStatus.OK);
+		}
 
 		try {
 			result = new Result<Customer>(this.customerRepository.save(customer));
 			verifyResult(result, true);
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
 		}
 		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
