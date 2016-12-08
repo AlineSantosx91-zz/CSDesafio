@@ -60,7 +60,6 @@ public class LoginService  implements ILoginService{
 			if(result != null && result.getStatus() == 1){
 				result = updateUserInfo(result.getResult());
 			}
-			result.getResult().setToken( UUID.randomUUID().toString());
 			result.getResult().setPassword(null);
 			return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 
@@ -75,6 +74,8 @@ public class LoginService  implements ILoginService{
 	
 	private Result<Customer> updateUserInfo( Customer customer){
 		customer.setLastLogin(new Date());
+		customer.setToken( UUID.randomUUID().toString());
+
 		return new Result<Customer>(customerRepository.save(customer));
 	}
 
