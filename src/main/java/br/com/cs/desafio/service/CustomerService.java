@@ -1,6 +1,7 @@
 package br.com.cs.desafio.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -74,16 +75,24 @@ public class CustomerService implements ICustomerService {
 		if(customer.getEmail() == null || customer.getEmail().trim().isEmpty()){
 			validators.add(new Validator("Email é obrigatorio"));
 		}
-		
+				
 		if(customer.getPassword() == null || customer.getPassword().trim().isEmpty()){
 			validators.add(new Validator("Senha é obrigatorio"));
 		}
 		
+
 		if(validators.size() > 0){
 			return new ResponseEntity<Result<Customer>>(new Result<Customer>(0, validators), HttpStatus.OK);
 		}
+		
+		Customer findUnique = this.customerRepository.findUnique(customer.email);
+		if(findUnique != null){
+			result = new Result<Customer>(new Validator("E-mail já existente"));
+			return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
+		}
 
 		try {
+			customer.setModified(new Date());
 			result = new Result<Customer>(this.customerRepository.save(customer));
 			verifyResult(result, true);
 		} catch (Exception e) {
