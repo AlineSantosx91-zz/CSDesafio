@@ -7,8 +7,11 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transaction;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,7 @@ import br.com.cs.desafio.dao.CustomerRepository;
 import br.com.cs.desafio.model.Customer;
 import br.com.cs.desafio.model.Phone;
 import br.com.cs.desafio.service.CustomerService;
+import br.com.cs.desafio.service.LoginService;
 import br.com.cs.desafio.validators.Result;
 
 /**
@@ -35,10 +39,12 @@ import br.com.cs.desafio.validators.Result;
 //@WebAppConfiguration
 public class CustomerTeste {
 	
-	@Autowired(required= true)
-	@Qualifier("customerService")
+	@Mock
 	CustomerService customerService;
-
+	
+	@Mock
+	LoginService loginService;
+	
 	public static final String REST_SERVICE_URI = "http://localhost:8080/api";
 	
 	@Test
@@ -86,7 +92,25 @@ public class CustomerTeste {
 	
 	/* GET Customer by Id */
 	public void getCostumerById() {
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<Customer> result = restTemplate.getForEntity(REST_SERVICE_URI + "/customers/1", Customer.class);
+		System.out.println(result);
 
+		assertNotNull(result);
+		assertEquals(result.getBody().getId().toString(), "1");
+	}
+	
+	/*Login*/
+	public void login(){
+		RestTemplate restTemplate = new RestTemplate();
+	
+		Customer customer = new Customer();
+		customer.setEmail("joana@silva.org");
+		customer.setPassword("teste123");
+		
+		URI uri = restTemplate.postForLocation(REST_SERVICE_URI + "/customers/", customer, Customer.class);
+		System.out.println(uri.toASCIIString());
+		
 	}
 
 }
