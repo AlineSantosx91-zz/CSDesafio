@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.cs.desafio.dao.CustomerRepository;
 import br.com.cs.desafio.model.Customer;
+import br.com.cs.desafio.security.Utils;
 import br.com.cs.desafio.service.CustomerService;
 import br.com.cs.desafio.validators.Result;
 
@@ -41,6 +42,7 @@ public class CustomerController {
 		
 		try{
 			findAll = customerRepository.findAll();
+			Utils.hideManyPasswords(findAll);
 		}catch (Exception e) {
 			logger.error(e.getMessage());
 			return new ResponseEntity<List<Customer>>(findAll, HttpStatus.INTERNAL_SERVER_ERROR);

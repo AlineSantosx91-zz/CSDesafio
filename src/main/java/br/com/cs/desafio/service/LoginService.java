@@ -64,7 +64,8 @@ public class LoginService  implements ILoginService{
 			if(result != null && result.getStatus() == 1){
 				result = updateUserInfo(result.getResult());
 			}
-			result.getResult().setPassword(null);
+//			result.getResult().setPassword(null);
+			Utils.hidePassword(result.getResult());
 			return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 
 		} catch (Exception e) {

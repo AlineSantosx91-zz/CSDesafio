@@ -46,6 +46,8 @@ public class CustomerService implements ICustomerService {
 			return new ResponseEntity<Result<Customer>>(new Result<>(new Validator("Usuário não localizado")),
 					HttpStatus.NOT_FOUND);
 		}
+		
+		Utils.hidePassword(result.getResult());
 
 		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 	}
@@ -73,7 +75,8 @@ public class CustomerService implements ICustomerService {
 			result = new Result<Customer>(new Validator("O email " + email + " n�o foi encontrado"));
 			return new ResponseEntity<Result<Customer>>(result, HttpStatus.NOT_FOUND);
 		}
-
+		
+		Utils.hidePassword(result.getResult());
 		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 	}
 
@@ -114,6 +117,7 @@ public class CustomerService implements ICustomerService {
 			logger.error(e.getMessage());
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);
 		}
+		Utils.hidePassword(result.getResult());
 		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 
 	}
@@ -184,7 +188,7 @@ public class CustomerService implements ICustomerService {
 			 * "Sessão inválida".
 			 */
 
-			if (!customer.getToken().equals(token)) {
+			if (customer.getToken().equals(token)) {
 
 				Date lastLogin = verifyLastLogin(customer);
 				Long pastMinutes = calcDiferenceBetweenDates(lastLogin);
@@ -199,6 +203,7 @@ public class CustomerService implements ICustomerService {
 		 * Caso tudo esteja ok, retornar o usuário no mesmo formato do retorno
 		 * do Login.
 		 */
+		Utils.hidePassword(customer);
 		return new ResponseEntity<Result<Customer>>(new Result<Customer>(customer), HttpStatus.OK);
 	}
 

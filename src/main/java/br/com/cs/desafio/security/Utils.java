@@ -3,6 +3,9 @@ package br.com.cs.desafio.security;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+
+import br.com.cs.desafio.model.Customer;
 
 public class Utils {
 
@@ -27,4 +30,16 @@ public class Utils {
 		}
 		return string;
 	}
+	
+	public static void hideManyPasswords(List<Customer> list){
+		
+//		imperformatico, mas foi o unico modo que encontrei no momento, para anular 
+		for(Customer customer : list){
+			customer.setPassword(null);
+		}
+	}
+	public static void hidePassword(Customer customer){
+			customer.setPassword(null);
+	}
+	
 }
