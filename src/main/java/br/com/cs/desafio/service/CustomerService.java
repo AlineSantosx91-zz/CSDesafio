@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.cs.desafio.dao.CustomerRepository;
 import br.com.cs.desafio.model.Customer;
+import br.com.cs.desafio.security.Utils;
 import br.com.cs.desafio.validators.Result;
 import br.com.cs.desafio.validators.Validator;
 
@@ -38,7 +39,11 @@ public class CustomerService implements ICustomerService {
 		if (result == null) {
 			result = new Result<Customer>(new Validator("Houve um erro interno, tente novamente"));
 		}
-		
+
+		if (result.getResult() == null) {
+			return new ResponseEntity<Result<Customer>>(result, HttpStatus.NOT_FOUND);
+		}
+
 		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 	}
 
@@ -46,23 +51,27 @@ public class CustomerService implements ICustomerService {
 	public ResponseEntity<Result<Customer>> findByEmail(String email) {
 		Result<Customer> result = null;
 
-		if (email != null && !email.trim().isEmpty()) {
+		if (email == null || email.trim().isEmpty()) {
+			result = new Result<Customer>(new Validator("Email nï¿½o pode ser vazio"));
+		} else {
 			try {
 				result = new Result<Customer>(this.customerRepository.findUnique(email));
 			} catch (Exception e) {
 				logger.error(e.getMessage());
+
 			}
-		} else {
-			result = new Result<Customer>(new Validator("Email não pode ser vazio"));
 		}
 
 		if (result == null) {
 			result = new Result<Customer>(new Validator("Houve um erro interno, tente novamente"));
+			return new ResponseEntity<Result<Customer>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
-		if(result.getResult() == null){
-			result = new Result<Customer>(new Validator("O email " +email+" não foi encontrado"));
+
+		if (result.getResult() == null) {
+			result = new Result<Customer>(new Validator("O email " + email + " nï¿½o foi encontrado"));
+			return new ResponseEntity<Result<Customer>>(result, HttpStatus.NOT_FOUND);
 		}
+
 		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
 	}
 
@@ -70,35 +79,35 @@ public class CustomerService implements ICustomerService {
 	public ResponseEntity<Result<Customer>> saveCustomer(Customer customer) {
 
 		Result<Customer> result = null;
-		List<Validator> validators = new ArrayList<>(); 
-		
-		if(customer.getName() == null || customer.getName().trim().isEmpty()){
-			validators.add(new Validator("Nome é obrigatorio"));
-		}
-		
-		if(customer.getEmail() == null || customer.getEmail().trim().isEmpty()){
-			validators.add(new Validator("Email é obrigatorio"));
-		}
-				
-		if(customer.getPassword() == null || customer.getPassword().trim().isEmpty()){
-			validators.add(new Validator("Senha é obrigatorio"));
-		}
-		
+		List<Validator> validators = new ArrayList<>();
 
-		if(validators.size() > 0){
-			return new ResponseEntity<Result<Customer>>(new Result<Customer>(0, validators), HttpStatus.OK);
-		}
-		
-		Customer findUnique = this.customerRepository.findUnique(customer.email);
-		if(findUnique != null){
-			result = new Result<Customer>(new Validator("E-mail já existente"));
-			return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
+		if (customer.getName() == null || customer.getName().trim().isEmpty()) {
+			validators.add(new Validator("Nome ï¿½ obrigatorio"));
 		}
 
+		if (customer.getEmail() == null || customer.getEmail().trim().isEmpty()) {
+			validators.add(new Validator("Email ï¿½ obrigatorio"));
+		}
+
+		if (customer.getPassword() == null || customer.getPassword().trim().isEmpty()) {
+			validators.add(new Validator("Senha ï¿½ obrigatorio"));
+		}
+
+		if (validators.size() > 0) {
+			return new ResponseEntity<Result<Customer>>(new Result<Customer>(0, validators), HttpStatus.BAD_REQUEST);
+		}
 		try {
+			Customer findUnique = this.customerRepository.findUnique(customer.email);
+			
+			if (findUnique != null) {
+				result = new Result<Customer>(new Validator("E-mail jï¿½ existente"));
+				return new ResponseEntity<Result<Customer>>(result, HttpStatus.UNPROCESSABLE_ENTITY);
+			}
+
 			customer.setModified(new Date());
+			String hashPassword = Utils.GerarHashMd5(customer.getPassword());
+			customer.setPassword(hashPassword);
 			result = new Result<Customer>(this.customerRepository.save(customer));
-			verifyResult(result, true);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(null);

@@ -35,27 +35,27 @@ public class LoginService  implements ILoginService{
 		
 		try {
 			if (email != null && !email.trim().isEmpty()) {
-				/*Caso o e-mail não exista, retornar erro com status apropriado mais a
-				mensagem "Usuário e/ou senha inválidos"*/
+				/*Caso o e-mail nï¿½o exista, retornar erro com status apropriado mais a
+				mensagem "Usuï¿½rio e/ou senha invï¿½lidos"*/
 			
 				result = new Result<Customer>( this.customerRepository.findUnique(email));
 				if(result == null || result.getResult() == null){
-					result = new Result<Customer>(new Validator("Usuário e/ou senha inválidos"));
+					result = new Result<Customer>(new Validator("Usuï¿½rio e/ou senha invï¿½lidos"));
 					return new ResponseEntity<Result<Customer>>(result, HttpStatus.NOT_FOUND);
 
 				}
 				
-				/*Caso o e-mail exista mas a senha não bata, retornar o status apropriado
-				 * 401 mais a mensagem "Usuário e/ou senha inválidos"*/
+				/*Caso o e-mail exista mas a senha nï¿½o bata, retornar o status apropriado
+				 * 401 mais a mensagem "Usuï¿½rio e/ou senha invï¿½lidos"*/
 				
 				if(result.getResult() != null && !result.getResult().getPassword().equals(password)){
-					result = new Result<Customer>(new Validator("Usuário e/ou senha inválidos"));
+					result = new Result<Customer>(new Validator("Usuï¿½rio e/ou senha invï¿½lidos"));
 					return new ResponseEntity<Result<Customer>>(result, HttpStatus.UNAUTHORIZED);
 				}
 				
 			}
-			/*Caso o e-mail e a senha correspondam a um usuário existente, retornar igual 
-			 ao endpoint de Criação.*/
+			/*Caso o e-mail e a senha correspondam a um usuï¿½rio existente, retornar igual 
+			 ao endpoint de Criaï¿½ï¿½o.*/
 			result = new Result<Customer>(this.loginRepository.login(email, password));
 			if(result != null && result.getStatus() == 1){
 				result = updateUserInfo(result.getResult());
@@ -66,7 +66,7 @@ public class LoginService  implements ILoginService{
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			result = new Result<Customer>(new Validator("Houve um erro interno, tente novamente"));
-			return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
+			return new ResponseEntity<Result<Customer>>(result, HttpStatus.INTERNAL_SERVER_ERROR);
 
 		}
 				

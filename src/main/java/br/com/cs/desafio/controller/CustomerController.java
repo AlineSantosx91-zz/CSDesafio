@@ -3,14 +3,11 @@ package br.com.cs.desafio.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,17 +34,6 @@ public class CustomerController {
 
 	protected final Logger logger = Logger.getLogger(getClass());
 
-	@GetMapping("/hello")
-	public String getHello() {
-		return "helo";
-	}
-	
-	@RequestMapping("/hello2")
-	public String helloWorld(Model model, HttpServletRequest httpServletRequest) {
-		model.addAttribute("russian", "aline");
-		return "hello-world";
-	}
-
 	@GetMapping("/customers")
 	private ResponseEntity<List<Customer>> getAllCustomers(@PathVariable(value = "email", required = false) String email) {
 		List<Customer> findAll = new ArrayList<>();
@@ -56,8 +42,8 @@ public class CustomerController {
 			findAll = customerRepository.findAll();
 		}catch (Exception e) {
 			logger.error(e.getMessage());
+			return new ResponseEntity<List<Customer>>(findAll, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-	
 		return new ResponseEntity<List<Customer>>(findAll, HttpStatus.OK);
 	}
 	
@@ -71,6 +57,4 @@ public class CustomerController {
 	public 	ResponseEntity<Result<Customer>> post(@RequestBody Customer customer) {
 		return customerService.saveCustomer(customer);
 	}
-
-
 }
