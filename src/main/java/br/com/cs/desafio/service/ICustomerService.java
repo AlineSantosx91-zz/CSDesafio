@@ -1,5 +1,6 @@
 package br.com.cs.desafio.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,8 @@ public interface ICustomerService {
 		ResponseEntity<Result<Customer>> verifyResult(Result<Customer>  result, Boolean isPOST);
 		
 		ResponseEntity<Result<Customer>> getPerfilCustomer(String token, Long id);
+		
+		Date verifyLastLogin(Customer customer);
 
 		String findToken(String token);
 

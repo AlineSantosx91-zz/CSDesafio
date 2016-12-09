@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -147,20 +149,49 @@ public class CustomerService implements ICustomerService {
 		/*Caso o token exista, buscar o usuário pelo id passado no path e comparar se o token no modelo 
 		é igual ao token passado no header.*/
 		
+		
+		/*Caso não seja o mesmo token, retornar erro com status apropriado e mensagem "Não autorizado"*/
+		Customer customer = new Customer();
 		if(token != null && !token.trim().isEmpty()){
-			Customer customer = this.customerRepository.findOne(id);
-			if(customer != null && customer.getToken().equals(token)){
-				
+			 customer = this.customerRepository.findOne(id);
+			if(customer != null && !customer.getToken().equals(token)){
+				return new ResponseEntity<Result<Customer>>(HttpStatus.UNAUTHORIZED);
 			}
 			
+			/*Caso seja o mesmo token, verificar se o último login foi a MENOS que 30 minutos atrás.
+			 * Caso não seja a MENOS que 30 minutos atrás,
+			 *retornar erro com status apropriado com mensagem "Sessão inválida".*/
+			
+			if(customer != null && customer.getToken().equals(token)){
+				Date lastLogin = verifyLastLogin(customer);
+				Long pastMinutes = calcDiferenceBetweenDates(lastLogin);
+				if(pastMinutes > 30){
+					
+					return new ResponseEntity<Result<Customer>>(HttpStatus.UNAUTHORIZED);
+				}
+			}
 		}
-		
-		return null;
+		/*Caso tudo esteja ok, retornar o usuário no mesmo formato do retorno do Login.*/
+		return new ResponseEntity<Result<Customer>>(new Result<Customer>(customer), HttpStatus.OK);
 	}
 
 	@Override
 	public String findToken(String token) {
 		return this.customerRepository.findToken(token);
+	}
+
+	@Override
+	public Date verifyLastLogin(Customer customer) {
+		return this.customerRepository.verifyLastLogin(customer.id);
+	}
+	
+	public Long calcDiferenceBetweenDates(Date lastLogin){
+	Duration dur = new Duration(new DateTime(lastLogin), DateTime.now());
+	
+    	System.out.println(dur.getStandardMinutes());
+    	
+    	return dur.getStandardMinutes();
+
 	}
 	
 

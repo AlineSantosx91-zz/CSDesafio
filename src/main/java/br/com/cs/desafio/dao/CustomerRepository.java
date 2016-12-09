@@ -1,5 +1,7 @@
 package br.com.cs.desafio.dao;
 
+import java.util.Date;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,6 +21,9 @@ public interface  CustomerRepository extends JpaRepository<Customer, Long> {
 
 	@Query(value="SELECT c.token FROM Customer c WHERE c.token=:token")
 	public String findToken(@Param("token") String token);
+	
+	@Query(value="SELECT c.lastLogin FROM Customer c WHERE c.id=:id")
+	public Date verifyLastLogin(@Param("id") Long id);
 
 	
 }
