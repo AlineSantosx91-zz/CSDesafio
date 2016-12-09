@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,6 +50,13 @@ public class CustomerController {
 	
 	@GetMapping("/customers/{id}")
 	private ResponseEntity<Result<Customer>> getUniqueCustomer(@PathVariable("id") Long id) {
+		ResponseEntity<Result<Customer>> findById = customerService.findById(id);
+		return findById;
+	}
+	
+	@GetMapping("/customers/{id}/perfil")
+	private ResponseEntity<Result<Customer>> getPerfilCustomer(@RequestHeader(value="token") String token,
+			@PathVariable("id") Long id) {
 		ResponseEntity<Result<Customer>> findById = customerService.findById(id);
 		return findById;
 	}

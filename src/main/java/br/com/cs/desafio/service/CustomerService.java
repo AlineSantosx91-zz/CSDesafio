@@ -58,7 +58,6 @@ public class CustomerService implements ICustomerService {
 				result = new Result<Customer>(this.customerRepository.findUnique(email));
 			} catch (Exception e) {
 				logger.error(e.getMessage());
-
 			}
 		}
 
@@ -135,5 +134,34 @@ public class CustomerService implements ICustomerService {
 	public List<Validator> errorResponse(List<Validator> validators) {
 		return validators;
 	}
+
+	@Override
+	public ResponseEntity<Result<Customer>> getPerfilCustomer(String tokenP, Long id) {
+		String token  = findToken(tokenP);
+		
+		/*Caso o token não exista, retornar erro com status apropriado com a mensagem "Não autorizado".*/
+		if(token == null){
+			return new ResponseEntity<Result<Customer>>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		/*Caso o token exista, buscar o usuário pelo id passado no path e comparar se o token no modelo 
+		é igual ao token passado no header.*/
+		
+		if(token != null && !token.trim().isEmpty()){
+			Customer customer = this.customerRepository.findOne(id);
+			if(customer != null && customer.getToken().equals(token)){
+				
+			}
+			
+		}
+		
+		return null;
+	}
+
+	@Override
+	public String findToken(String token) {
+		return this.customerRepository.findToken(token);
+	}
+	
 
 }

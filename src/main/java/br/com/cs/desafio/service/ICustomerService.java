@@ -18,6 +18,11 @@ public interface ICustomerService {
 		ResponseEntity<Result<Customer>> saveCustomer(Customer custumer);
 	 	
 		ResponseEntity<Result<Customer>> verifyResult(Result<Customer>  result, Boolean isPOST);
+		
+		ResponseEntity<Result<Customer>> getPerfilCustomer(String token, Long id);
+
+		String findToken(String token);
+
 	 	
 	 	List<Validator> errorResponse(List<Validator> validators); 
 }
