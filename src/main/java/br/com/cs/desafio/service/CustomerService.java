@@ -1,3 +1,4 @@
+
 package br.com.cs.desafio.service;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class CustomerService implements ICustomerService {
 		Result<Customer> result = null;
 
 		if (email == null || email.trim().isEmpty()) {
-			result = new Result<Customer>(new Validator("Email n�o pode ser vazio"));
+			result = new Result<Customer>(new Validator("Email não pode ser vazio"));
 		} else {
 			try {
 				result = new Result<Customer>(this.customerRepository.findUnique(email));
@@ -72,7 +73,7 @@ public class CustomerService implements ICustomerService {
 		}
 
 		if (result.getResult() == null) {
-			result = new Result<Customer>(new Validator("O email " + email + " n�o foi encontrado"));
+			result = new Result<Customer>(new Validator("O email " + email + " não foi encontrado"));
 			return new ResponseEntity<Result<Customer>>(result, HttpStatus.NOT_FOUND);
 		}
 		
@@ -87,15 +88,15 @@ public class CustomerService implements ICustomerService {
 		List<Validator> validators = new ArrayList<>();
 
 		if (customer.getName() == null || customer.getName().trim().isEmpty()) {
-			validators.add(new Validator("Nome � obrigatorio"));
+			validators.add(new Validator("Nome é obrigatório"));
 		}
 
 		if (customer.getEmail() == null || customer.getEmail().trim().isEmpty()) {
-			validators.add(new Validator("Email � obrigatorio"));
+			validators.add(new Validator("Email é obrigatório"));
 		}
 
 		if (customer.getPassword() == null || customer.getPassword().trim().isEmpty()) {
-			validators.add(new Validator("Senha � obrigatorio"));
+			validators.add(new Validator("Senha é obrigatório"));
 		}
 
 		if (validators.size() > 0) {
@@ -105,7 +106,7 @@ public class CustomerService implements ICustomerService {
 			Customer findUnique = this.customerRepository.findUnique(customer.email);
 
 			if (findUnique != null) {
-				result = new Result<Customer>(new Validator("E-mail j� existente"));
+				result = new Result<Customer>(new Validator("E-mail já existente"));
 				return new ResponseEntity<Result<Customer>>(result, HttpStatus.UNPROCESSABLE_ENTITY);
 			}
 

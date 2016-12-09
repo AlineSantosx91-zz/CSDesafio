@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 // @EnableAutoConfiguration
 @ComponentScan("br.com.cs.desafio.**")
-@EnableJpaRepositories(basePackages = { "br.com.cs.desafio.dao.**" })
+@EnableJpaRepositories(basePackages = { "br.com.cs.desafio.**" })
 @EntityScan(basePackages = { "br.com.cs.*" })
 @PropertySource("config/application.properties")
 public class Application extends SpringBootServletInitializer {

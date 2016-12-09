@@ -5,42 +5,51 @@ import static org.junit.Assert.assertNotNull;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
 
+import br.com.cs.desafio.dao.CustomerRepository;
 import br.com.cs.desafio.model.Customer;
 import br.com.cs.desafio.model.Phone;
+import br.com.cs.desafio.service.CustomerService;
 import br.com.cs.desafio.validators.Result;
 
 /**
  * 
- * Teste de IntegraÁ„o Teste Unit·rio
+ * Teste de Integra√ß√£o
+ *  Teste Unit√°rio
  * 
  * @author Aline Santos
  *
  */
-@RunWith(SpringRunner.class)
-@WebAppConfiguration
+//@RunWith(SpringRunner.class)
+//@WebAppConfiguration
 public class CustomerTeste {
+	
+	@Autowired(required= true)
+	@Qualifier("customerService")
+	CustomerService customerService;
 
 	public static final String REST_SERVICE_URI = "http://localhost:8080/api";
-
+	
+	@Test
 	/* POST */
 	public void createUser() {
 		System.out.println("Testing create User API----------");
 		RestTemplate restTemplate = new RestTemplate();
 		Customer customer = new Customer();
-		customer.setName("Jo„o da Silva");
-		customer.setEmail("joao@silva.org");
-		customer.setPassword("hunter2");
+		customer.setName("Joana Mello");
+		customer.setEmail("joana@silva.org");
+		customer.setPassword("rsrs");
 
 		Phone phone1 = new Phone();
 		phone1.setDdd("11");
@@ -55,6 +64,10 @@ public class CustomerTeste {
 		phones.add(phone2);
 
 		customer.setPhones(phones);
+		
+		ResponseEntity<Result<Customer>> saveCustomer = this.customerService.saveCustomer(customer);
+		assertNotNull(saveCustomer);
+		assertEquals(saveCustomer.getBody().getResult().email, "joana@silva.org");
 
 		URI uri = restTemplate.postForLocation(REST_SERVICE_URI + "/customers/", customer, Customer.class);
 		System.out.println(uri.toASCIIString());
@@ -70,7 +83,7 @@ public class CustomerTeste {
 		assertEquals(result.getStatusCode(), HttpStatus.OK);
 	}
 	
-	@Test
+	
 	/* GET Customer by Id */
 	public void getCostumerById() {
 
