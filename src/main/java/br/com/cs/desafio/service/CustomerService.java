@@ -43,7 +43,8 @@ public class CustomerService implements ICustomerService {
 		}
 
 		if (result.getResult() == null) {
-			return new ResponseEntity<Result<Customer>>(result, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<Result<Customer>>(new Result<>(new Validator("Usuário não localizado")),
+					HttpStatus.NOT_FOUND);
 		}
 
 		return new ResponseEntity<Result<Customer>>(result, HttpStatus.OK);
@@ -99,7 +100,7 @@ public class CustomerService implements ICustomerService {
 		}
 		try {
 			Customer findUnique = this.customerRepository.findUnique(customer.email);
-			
+
 			if (findUnique != null) {
 				result = new Result<Customer>(new Validator("E-mail j� existente"));
 				return new ResponseEntity<Result<Customer>>(result, HttpStatus.UNPROCESSABLE_ENTITY);
@@ -123,7 +124,8 @@ public class CustomerService implements ICustomerService {
 			if (isPOST) {
 				return new ResponseEntity<Result<Customer>>(HttpStatus.UNPROCESSABLE_ENTITY);
 			}
-			return new ResponseEntity<Result<Customer>>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<Result<Customer>>(new Result<>(new Validator("Houve um erro interno")),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		if (result.getStatus() == 0) {
@@ -139,60 +141,79 @@ public class CustomerService implements ICustomerService {
 
 	@Override
 	public ResponseEntity<Result<Customer>> getPerfilCustomer(String tokenP, Long id) {
-		String token  = findToken(tokenP);
-		
-		/*Caso o token não exista, retornar erro com status apropriado com a mensagem "Não autorizado".*/
-		if(token == null){
-			return new ResponseEntity<Result<Customer>>(HttpStatus.UNAUTHORIZED);
+		Customer customer = this.customerRepository.findOne(id);
+
+		// a principio, se o usuario estiver null ou nao tiver token, nao esta
+		// autorizado
+		if (customer == null || customer.getToken() == null) {
+			return new ResponseEntity<Result<Customer>>(new Result<>(new Validator("Não autorizado")),
+					HttpStatus.UNAUTHORIZED);
 		}
-		
-		/*Caso o token exista, buscar o usuário pelo id passado no path e comparar se o token no modelo 
-		é igual ao token passado no header.*/
-		
-		
-		/*Caso não seja o mesmo token, retornar erro com status apropriado e mensagem "Não autorizado"*/
-		Customer customer = new Customer();
-		if(token != null && !token.trim().isEmpty()){
-			 customer = this.customerRepository.findOne(id);
-			if(customer != null && !customer.getToken().equals(token)){
-				return new ResponseEntity<Result<Customer>>(HttpStatus.UNAUTHORIZED);
+
+		String token = this.customerRepository.findToken(tokenP);
+
+		/*
+		 * Caso o token não exista, retornar erro com status apropriado com a
+		 * mensagem "Não autorizado".
+		 */
+		if (token == null) {
+			return new ResponseEntity<Result<Customer>>(new Result<>(new Validator("Não autorizado")),
+					HttpStatus.UNAUTHORIZED);
+		}
+
+		/*
+		 * Caso o token exista, buscar o usuário pelo id passado no path e
+		 * comparar se o token no modelo é igual ao token passado no header.
+		 */
+
+		/*
+		 * Caso não seja o mesmo token, retornar erro com status apropriado e
+		 * mensagem "Não autorizado"
+		 */
+
+		if (token != null && !token.trim().isEmpty()) {
+			if (!customer.getToken().equals(token)) {
+				return new ResponseEntity<Result<Customer>>(new Result<>(new Validator("Não autorizado")),
+						HttpStatus.UNAUTHORIZED);
 			}
-			
-			/*Caso seja o mesmo token, verificar se o último login foi a MENOS que 30 minutos atrás.
-			 * Caso não seja a MENOS que 30 minutos atrás,
-			 *retornar erro com status apropriado com mensagem "Sessão inválida".*/
-			
-			if(customer != null && customer.getToken().equals(token)){
+
+			/*
+			 * Caso seja o mesmo token, verificar se o último login foi a MENOS
+			 * que 30 minutos atrás. Caso não seja a MENOS que 30 minutos atrás,
+			 * retornar erro com status apropriado com mensagem
+			 * "Sessão inválida".
+			 */
+
+			if (!customer.getToken().equals(token)) {
+
 				Date lastLogin = verifyLastLogin(customer);
 				Long pastMinutes = calcDiferenceBetweenDates(lastLogin);
-				if(pastMinutes > 30){
-					
-					return new ResponseEntity<Result<Customer>>(HttpStatus.UNAUTHORIZED);
+				if (pastMinutes > 30) {
+
+					return new ResponseEntity<Result<Customer>>(new Result<>(new Validator("Sessão inválida")),
+							HttpStatus.UNAUTHORIZED);
 				}
 			}
 		}
-		/*Caso tudo esteja ok, retornar o usuário no mesmo formato do retorno do Login.*/
+		/*
+		 * Caso tudo esteja ok, retornar o usuário no mesmo formato do retorno
+		 * do Login.
+		 */
 		return new ResponseEntity<Result<Customer>>(new Result<Customer>(customer), HttpStatus.OK);
-	}
-
-	@Override
-	public String findToken(String token) {
-		return this.customerRepository.findToken(token);
 	}
 
 	@Override
 	public Date verifyLastLogin(Customer customer) {
 		return this.customerRepository.verifyLastLogin(customer.id);
 	}
-	
-	public Long calcDiferenceBetweenDates(Date lastLogin){
-	Duration dur = new Duration(new DateTime(lastLogin), DateTime.now());
-	
-    	System.out.println(dur.getStandardMinutes());
-    	
-    	return dur.getStandardMinutes();
+
+	public Long calcDiferenceBetweenDates(Date lastLogin) {
+		Duration dur = new Duration(new DateTime(lastLogin), DateTime.now());
+
+		System.out.println(dur.getStandardMinutes());
+
+		return dur.getStandardMinutes();
 
 	}
-	
 
 }

@@ -19,8 +19,9 @@ public interface  CustomerRepository extends JpaRepository<Customer, Long> {
 	@Query(value="SELECT u FROM User u WHERE u.email=:email")
 	public User findUserUnique(@Param("email") String email);
 
-	@Query(value="SELECT c.token FROM Customer c WHERE c.token=:token")
+	@Query(value="SELECT u.token FROM User u WHERE u.token=:token")
 	public String findToken(@Param("token") String token);
+	
 	
 	@Query(value="SELECT c.lastLogin FROM Customer c WHERE c.id=:id")
 	public Date verifyLastLogin(@Param("id") Long id);

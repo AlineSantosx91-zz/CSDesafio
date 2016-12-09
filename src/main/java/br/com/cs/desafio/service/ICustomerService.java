@@ -24,8 +24,6 @@ public interface ICustomerService {
 		
 		Date verifyLastLogin(Customer customer);
 
-		String findToken(String token);
-
 	 	
 	 	List<Validator> errorResponse(List<Validator> validators); 
 }

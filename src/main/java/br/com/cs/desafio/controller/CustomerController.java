@@ -54,10 +54,10 @@ public class CustomerController {
 		return findById;
 	}
 	
-	@GetMapping("/customers/{id}/perfil")
+	@GetMapping("/customers/{id}/profile")
 	private ResponseEntity<Result<Customer>> getPerfilCustomer(@RequestHeader(value="token") String token,
 			@PathVariable("id") Long id) {
-		ResponseEntity<Result<Customer>> findById = customerService.findById(id);
+		ResponseEntity<Result<Customer>> findById = customerService.getPerfilCustomer(token, id);
 		return findById;
 	}
 

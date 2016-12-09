@@ -1,5 +1,6 @@
 package br.com.cs.desafio.service;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import br.com.cs.desafio.dao.CustomerRepository;
 import br.com.cs.desafio.dao.LoginRepository;
 import br.com.cs.desafio.model.Customer;
+import br.com.cs.desafio.security.Utils;
 import br.com.cs.desafio.validators.Result;
 import br.com.cs.desafio.validators.Validator;
 
@@ -35,6 +37,8 @@ public class LoginService  implements ILoginService{
 		
 		try {
 			if (email != null && !email.trim().isEmpty()) {
+				password = Utils.GerarHashMd5(password);
+
 				/*Caso o e-mail n�o exista, retornar erro com status apropriado mais a
 				mensagem "Usu�rio e/ou senha inv�lidos"*/
 			
@@ -74,7 +78,11 @@ public class LoginService  implements ILoginService{
 	
 	private Result<Customer> updateUserInfo( Customer customer){
 		customer.setLastLogin(new Date());
-		customer.setToken( UUID.randomUUID().toString());
+		try {
+			customer.setToken( Utils.GerarHashMd5(UUID.randomUUID().toString()));
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
 
 		return new Result<Customer>(customerRepository.save(customer));
 	}
